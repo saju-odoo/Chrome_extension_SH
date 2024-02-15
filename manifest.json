@@ -4,9 +4,6 @@
   "description": "Modify SH",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://www.odoo.sh/*"],
-  "background":{
-    "service_worker":"background.js"
-  },
   "content_scripts": [
     {
       "matches": ["https://*.odoo.sh/project*"],
