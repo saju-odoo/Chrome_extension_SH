@@ -1,0 +1,33 @@
+{
+  "name": "Page Modifier",
+  "version": "0.1.0",
+  "description": "Modify SH",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["https://www.odoo.sh/*"],
+  "background":{
+    "service_worker":"background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.odoo.sh/project*"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/star.png"
+      ],
+      "matches": ["https://www.odoo.sh/*"]
+    }
+    ],
+  "icons":{
+    "16": "assets/icon.png",
+    "48" : "assets/icon.png",
+    "128": "assets/icon.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 3
+}
