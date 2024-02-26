@@ -1,4 +1,4 @@
-const CHROME_STORAGE_FAVORITES_KEY = "starredProjects"
+const CHROME_STORAGE_FAVORITES_KEY = "starredProjects";
 const STARRED_CLASS = "fa-star";
 const NON_STARRED_CLASS = "fa-star-o";
 
