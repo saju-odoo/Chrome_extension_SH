@@ -1,4 +1,4 @@
-const CHROME_STORAGE_FAVORITES_KEY = "starredProjects"
+const CHROME_STORAGE_FAVORITES_KEY = "starredProjects";
 const STARRED_CLASS = "fa-star";
 const NON_STARRED_CLASS = "fa-star-o";
 
@@ -39,15 +39,17 @@ const setFavoritesProjects = async (projects) => {
  * }
  */
 const isCardLayout = () => {
-    return document.querySelector(".o_sh_projects_layout").children[0].className.includes("btn-primary");
+    const layout = document.querySelector(".o_sh_projects_layout");
+    if (!layout) {
+        return false;
+    }
+    return layout.children[0].className.includes("btn-primary");
 };
 
-const sortProjects = (projects) => {
-    return projects.toSorted((a, b) => {
-        const aHasStar = a.querySelector(".fa-star") !== null;
-        const bHasStar = b.querySelector(".fa-star") !== null;
-        return bHasStar - aHasStar
-    });
+const sortProjects = (a, b) => {
+    const aHasStar = a.querySelector(".fa-star") !== null;
+    const bHasStar = b.querySelector(".fa-star") !== null;
+    return bHasStar - aHasStar;
 };
 
 const toggleStar = (star) => {
@@ -112,11 +114,11 @@ const initOdooSh = async () => {
                 const star = generateFavoriteElement(favorites.includes(projectName));
                 buttonsRow.appendChild(star);
 
-                star.addEventListener("click", (event) => handleFavoriteClick(event, projectName).then(() => sortProjects(projects).forEach(element => projectsContainer.appendChild(element))));
+                star.addEventListener("click", (event) => handleFavoriteClick(event, projectName).then(() => projects.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element))));
             }
         }
 
-        sortProjects(projects).forEach(element => projectsContainer.appendChild(element));
+        projects.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element));
     }
 };
 
