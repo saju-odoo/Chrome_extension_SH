@@ -7,7 +7,8 @@
   "content_scripts": [
     {
       "matches": ["https://*.odoo.sh/project*"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.js"],
+      "css": ["assets/styles.css"]
     }
   ],
   "web_accessible_resources": [
