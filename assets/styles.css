@@ -1,15 +1,13 @@
-.x-odoo-sh-favorite-icon {
+.x-odoo-sh-favorite-icon, .x-odoo-sh-favorite-icon-list {
     cursor: pointer;
 }
 
-/*.x-odoo-sh-favorite-icon.checked {*/
-/*.x-odoo-sh-favorite-icon:hover > i.fa-star {*/
 .x-odoo-sh-favorite-icon:hover {
     background-color: #00A09D;
     color: white;
 }
 
-.x-odoo-sh-favorite-icon > i.fa-star {
+.x-odoo-sh-favorite-icon > i.fa-star, .x-odoo-sh-favorite-icon-list.fa-star {
     color: darkorange;
 }
 
