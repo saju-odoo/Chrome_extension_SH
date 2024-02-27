@@ -6,7 +6,7 @@
   "host_permissions": ["https://www.odoo.sh/*"],
   "content_scripts": [
     {
-      "matches": ["https://*.odoo.sh/project*"],
+      "matches": ["https://*.odoo.sh/project/*"],
       "js": ["contentScript.js"],
       "css": ["assets/styles.css"]
     }

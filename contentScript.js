@@ -52,14 +52,16 @@ const sortProjects = (a, b) => {
     return bHasStar - aHasStar;
 };
 
-const toggleStar = (star) => {
+const toggleStar = (star, projectName) => {
     const isStarred = star.classList.contains(STARRED_CLASS);
     if (isStarred) {
         star.classList.remove(STARRED_CLASS);
         star.classList.add(NON_STARRED_CLASS);
+        return removeFavorite(projectName);
     } else {
         star.classList.remove(NON_STARRED_CLASS);
         star.classList.add(STARRED_CLASS);
+        return addFavorite(projectName);
     }
 };
 
@@ -77,18 +79,10 @@ const removeFavorite = async (projectName) => {
 const handleFavoriteClick = (event, projectName) => {
     const starContainer = event.currentTarget;
     const star = starContainer.querySelector("i");
-    const isStarred = star.classList.contains(STARRED_CLASS);
-
-    toggleStar(star);
-
-    if (isStarred) {
-        return removeFavorite(projectName);
-    } else {
-        return addFavorite(projectName);
-    }
+    return toggleStar(star, projectName);
 };
 
-const initOdooSh = async () => {
+const handleProjectListPage = async () => {
     const starExists = document.querySelector(".x-odoo-sh-favorite-image");
 
     if (!starExists) {
@@ -119,6 +113,50 @@ const initOdooSh = async () => {
         }
 
         projects.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element));
+}};
+
+const handleProjectPage = async () => {
+    const wrapper = document.querySelector("#wrapwrap");
+    const favorites = await getFavoritesProjects();
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === "childList") {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeName.toLowerCase() === "header") {
+                        const projectMenu = document.querySelector("div.project-menu");
+                        const tableBody = projectMenu.querySelector("table tbody");
+                        const projects = Array.from(tableBody.children);
+                        projects.toSorted((a, b) => {
+                            const aIsFavorite = favorites.some((fav) => a.children[1].innerText === fav);
+                            const bIsFavorite = favorites.some((fav) => b.children[1].innerText === fav);
+                            if (aIsFavorite) {
+                                if (a.children[0].children.length === 0) {
+                                    const star = document.createElement("i");
+                                    star.className = "fa fa-star text-warning";
+                                    a.children[0].append(star)
+                                } else if (a.children[0].children.length === 1 && !a.children[0].children[0].className.includes("fa-star")) {
+                                    a.children[0].children[0].classList.remove("fa-check");
+                                    a.children[0].children[0].classList.add("fa-star");
+                                }
+                            }
+                            return bIsFavorite - aIsFavorite;
+                        }).forEach((project) => tableBody.append(project));
+                        observer.disconnect();
+                    }
+                });
+            }
+        });
+    });
+
+    observer.observe(wrapper, { attributes: true, childList: true, subtree: true });
+};
+
+const initOdooSh = async () => {
+    if (window.location.href === "https://www.odoo.sh/project") {
+        return handleProjectListPage();
+    } else if (window.location.href.startsWith("https://www.odoo.sh/project/")) {
+        return handleProjectPage();
     }
 };
 
