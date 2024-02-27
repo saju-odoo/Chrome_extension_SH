@@ -2,14 +2,23 @@ const CHROME_STORAGE_FAVORITES_KEY = "starredProjects";
 const STARRED_CLASS = "fa-star";
 const NON_STARRED_CLASS = "fa-star-o";
 
-const generateFavoriteElement = (isStarred = false) => {
-    const star = document.createElement("div");
+const generateFavoriteElement = (type, isStarred = false) => {
     const currentClass = isStarred ? STARRED_CLASS : NON_STARRED_CLASS;
+    if (type === "card") {
+        const star = document.createElement("div");
+        star.innerHTML = `<i class="fa ${currentClass}" aria-hidden="true"></i>`
+        star.className = "x-odoo-sh-favorite-icon p-2";
+        star.title = "Click to star project";
+        return star;
+    }
 
-    star.innerHTML = `<i class="fa ${currentClass}" aria-hidden="true"></i>`
-    star.className = "x-odoo-sh-favorite-icon p-2";
-    star.title = "Click to star project";
-    return star;
+    if (type === "list") {
+        const star = document.createElement("i");
+        star.classList.add("fa", currentClass, "pr-2", "x-odoo-sh-favorite-icon-list");
+        star.ariaHidden = "true";
+        star.title = "Click to star project";
+        return star;
+    }
 };
 
 const getFavoritesProjects = async () => {
@@ -22,45 +31,30 @@ const setFavoritesProjects = async (projects) => {
     return await chrome.storage.local.set({[CHROME_STORAGE_FAVORITES_KEY]: projects})
 };
 
-/**
- * This function checks if the current view is a cards view or a list view.
- * It does this by checking the class name of the first child of the element with class "o_sh_projects_layout".
- * If the class name includes "btn-primary", it means the current view is a cards view.
- * The first child of the element represents the cards view and the second child represents the list view.
- *
- * @returns {boolean} - Returns true if the current view is a cards view, false otherwise.
- *
- * @example
- * const isCardsView = isCardsViewList();
- * if (isCardsView) {
- *     console.log("The current view is a cards view.");
- * } else {
- *     console.log("The current view is a list view.");
- * }
- */
-const isCardLayout = () => {
-    const layout = document.querySelector(".o_sh_projects_layout");
-    if (!layout) {
-        return false;
-    }
-    return layout.children[0].className.includes("btn-primary");
-};
-
 const sortProjects = (a, b) => {
     const aHasStar = a.querySelector(".fa-star") !== null;
     const bHasStar = b.querySelector(".fa-star") !== null;
+    if (aHasStar && bHasStar) {
+        const aName = a.dataset.name;
+        const bName = b.dataset.name;
+        return aName.localeCompare(bName);
+    }
     return bHasStar - aHasStar;
 };
 
-const toggleStar = (star, projectName) => {
-    const isStarred = star.classList.contains(STARRED_CLASS);
+const toggleStar = (stars, projectName) => {
+    const isStarred = stars[0].classList.contains(STARRED_CLASS);
     if (isStarred) {
-        star.classList.remove(STARRED_CLASS);
-        star.classList.add(NON_STARRED_CLASS);
+        stars.forEach((star) => {
+            star.classList.remove(STARRED_CLASS);
+            star.classList.add(NON_STARRED_CLASS);
+        });
         return removeFavorite(projectName);
     } else {
-        star.classList.remove(NON_STARRED_CLASS);
-        star.classList.add(STARRED_CLASS);
+        stars.forEach((star) => {
+            star.classList.remove(NON_STARRED_CLASS);
+            star.classList.add(STARRED_CLASS);
+        });
         return addFavorite(projectName);
     }
 };
@@ -77,43 +71,75 @@ const removeFavorite = async (projectName) => {
 };
 
 const handleFavoriteClick = (event, projectName) => {
+    const projectsContainer = document.querySelector(".o_project_cards");
+    const tableBody = projectsContainer.querySelector("div.o_sh_display_list > table > tbody");
+
     const starContainer = event.currentTarget;
-    const star = starContainer.querySelector("i");
-    return toggleStar(star, projectName);
+    const star = starContainer.querySelector("i") || starContainer;
+    let otherStar;
+    if (event.currentTarget.nodeName === "I"){ // Event comes from list view
+        otherStar = document.querySelector(`div.o_project_card_container[data-name="${projectName}"] .x-odoo-sh-favorite-icon i`);
+    } else { // Event comes from cards view
+        otherStar = document.querySelector(`tr.o_project_card_container[data-name="${projectName}"] th i`);
+    }
+
+    return toggleStar([star, otherStar], projectName).then(() => {
+        const projectsCardsNodes = document.querySelectorAll("div.o_project_card_container");
+        const projectsListNodes = document.querySelectorAll("tr.o_project_card_container");
+        const projectsCards = Array.from(projectsCardsNodes);
+        const projectsList = Array.from(projectsListNodes);
+        projectsCards.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element));
+        projectsList.toSorted(sortProjects).forEach(element => tableBody.appendChild(element));
+    });
 };
 
 const handleProjectListPage = async () => {
-    const starExists = document.querySelector(".x-odoo-sh-favorite-image");
+    const projectsCardsNodes = document.querySelectorAll("div.o_project_card_container");
+    const projectsListNodes = document.querySelectorAll("tr.o_project_card_container");
 
-    if (!starExists) {
-        const projectsNodes = isCardLayout() ? document.querySelectorAll("div.o_project_card_container") : document.querySelectorAll("tr.o_project_card_container")
-        if (projectsNodes.length === 0) {
-            return;
+    if (projectsCardsNodes.length === 0 && projectsListNodes.length === 0) {
+        return;
+    }
+
+    const projectsCards = Array.from(projectsCardsNodes);
+    const projectsList = Array.from(projectsListNodes);
+    const projectsContainer = document.querySelector(".o_project_cards");
+    const tableBody = projectsContainer.querySelector("div.o_sh_display_list > table > tbody");
+    const favorites = await getFavoritesProjects();
+
+    // Add star to each cards
+    for (const projectCard of projectsCards) {
+        const projectName = projectCard.dataset.name;
+        const buttonsRow = projectCard.querySelector("div.card > div > div");
+
+        if (buttonsRow) {
+            buttonsRow.classList.add("x-odoo-sh-fix-card-buttons-row"); // Attempt to fix misalignement
+            const dropdown = buttonsRow.querySelector(".o_project_dropdown");
+            dropdown.classList.remove("p-2");
+            dropdown.classList.add("x-odoo-sh-fix-card-dropdown");
+
+            const star = generateFavoriteElement("card", favorites.includes(projectName));
+            buttonsRow.appendChild(star);
+
+            star.addEventListener("click", (event) => handleFavoriteClick(event, projectName));
         }
-        const projects = Array.from(projectsNodes);
-        const projectsContainer = document.querySelector(".o_project_cards");
-        const favorites = await getFavoritesProjects();
+    }
+    projectsCards.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element));
 
-        // Add star to each cards
-        for (const project of projects) {
-            const projectName = project.dataset.name;
-            const buttonsRow = project.querySelector("div.card > div > div");
+    for (const projectRow of projectsList) {
+        const projectName = projectRow.dataset.name;
 
-            if (buttonsRow) {
-                buttonsRow.classList.add("x-odoo-sh-fix-card-buttons-row"); // Attempt to fix misalignement
-                const dropdown = buttonsRow.querySelector(".o_project_dropdown");
-                dropdown.classList.remove("p-2");
-                dropdown.classList.add("x-odoo-sh-fix-card-dropdown");
+        const nameCell = projectRow.querySelector("th");
 
-                const star = generateFavoriteElement(favorites.includes(projectName));
-                buttonsRow.appendChild(star);
+        if (nameCell) {
+            const star = generateFavoriteElement("list", favorites.includes(projectName));
+            nameCell.prepend(star);
 
-                star.addEventListener("click", (event) => handleFavoriteClick(event, projectName).then(() => projects.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element))));
-            }
+            star.addEventListener("click", (event) => handleFavoriteClick(event, projectName));
         }
-
-        projects.toSorted(sortProjects).forEach(element => projectsContainer.appendChild(element));
-}};
+    }
+    projectsList.toSorted(sortProjects).forEach(element => tableBody.appendChild(element));
+};
 
 const handleProjectPage = async () => {
     const wrapper = document.querySelector("#wrapwrap");
@@ -160,4 +186,4 @@ const initOdooSh = async () => {
     }
 };
 
-initOdooSh().catch((error) => console.error(error));
+initOdooSh().catch((error) => console.warn(error));
