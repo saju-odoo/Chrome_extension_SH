@@ -1,12 +1,56 @@
 .container {
   width: 280px;
-  color: #314d3e;
+  color: #8F8F8F;
+  background-color: #fff;
+  margin: -10;
+  margin-bottom: -12;
 }
 
 .title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
+  padding: 10px;
+  background-color: #714B67;
+  color: #fff;
+  margin: -10;
+  text-align: center;
+}
+
+.tab {
+  padding: 10px;
+}
+
+#projects {
+  list-style: none;
+  padding: 0;
+  margin-top: 12;
+  margin-left: 10;
+  margin-right: 10;
+}
+
+#projects li {
   padding: 8px;
+  background-color: #017E84;
+  border-bottom: 3px solid #fff;
+  border-top: 3px solid #fff;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  text-align: center;
+}
+#projects li:hover {
+  background-color: #004d52;
+}
+
+#projects li a {
+  padding-right: 60px;
+  padding-left: 60px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .textbox {
