@@ -1,6 +1,6 @@
 {
-  "name": "Page Modifier",
-  "version": "0.1.0",
+  "name": "PS tech life changer",
+  "version": "0.1.2",
   "description": "Modify SH",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://www.odoo.sh/*"],
