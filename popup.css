@@ -2,8 +2,8 @@
   width: 280px;
   color: #8F8F8F;
   background-color: #fff;
-  margin: -10;
-  margin-bottom: -12;
+  margin: -10px;
+  margin-bottom: -12px;
 }
 
 .title {
@@ -12,7 +12,7 @@
   padding: 10px;
   background-color: #714B67;
   color: #fff;
-  margin: -10;
+  margin: -10px;
   text-align: center;
 }
 
@@ -23,9 +23,9 @@
 #projects {
   list-style: none;
   padding: 0;
-  margin-top: 12;
-  margin-left: 10;
-  margin-right: 10;
+  margin-top: 12px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 #projects li {
@@ -33,10 +33,7 @@
   background-color: #017E84;
   border-bottom: 3px solid #fff;
   border-top: 3px solid #fff;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-radius: 8px;
   text-align: center;
 }
 #projects li:hover {
