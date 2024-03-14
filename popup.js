@@ -14,9 +14,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     // ];
     const projectsContainer = document.getElementById("projects");
     for (const favorite of favorites) {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="https://www.odoo.sh/project/${favorite}" target="_blank">${favorite}</a>`;
-        // li.innerHTML = `<a href="https://github.com/Minijump/${favorite}" target="_blank">${favorite}</a>`;
-        projectsContainer.appendChild(li);
+        const a = document.createElement("a");
+        a.href = `https://www.odoo.sh/project/${favorite}`;
+        a.target = "_blank";
+        a.innerHTML = `<li>${favorite}</li>`;
+        projectsContainer.appendChild(a);
     }
 });
