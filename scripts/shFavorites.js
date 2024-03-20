@@ -34,7 +34,7 @@ const setFavoritesProjects = async (projects) => {
 const sortProjects = (a, b) => {
     const aHasStar = a.querySelector(".fa-star") !== null;
     const bHasStar = b.querySelector(".fa-star") !== null;
-    if (aHasStar && bHasStar) {
+    if (aHasStar === bHasStar) {
         const aName = a.dataset.name;
         const bName = b.dataset.name;
         return aName.localeCompare(bName);
@@ -179,10 +179,10 @@ const handleProjectPage = async () => {
 };
 
 const initOdooSh = async () => {
-    if (window.location.href === "https://www.odoo.sh/project") {
-        return handleProjectListPage();
-    } else if (window.location.href.startsWith("https://www.odoo.sh/project/")) {
+    if (window.location.href.startsWith("https://www.odoo.sh/project/")) {
         return handleProjectPage();
+    }else {
+        return handleProjectListPage();
     }
 };
 

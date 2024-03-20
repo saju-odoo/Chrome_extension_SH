@@ -3,11 +3,11 @@
   "version": "0.1.2",
   "description": "Modify SH",
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["https://www.odoo.sh/*"],
+  "host_permissions": ["https://*/*"],
   "content_scripts": [
     {
-      "matches": ["https://*.odoo.sh/project/*"],
-      "js": ["contentScript.js"],
+      "matches": ["https://*.odoo.sh/project*"],
+      "js": ["scripts/shFavorites.js"],
       "css": ["assets/styles.css"]
     }
   ],
