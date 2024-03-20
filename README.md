@@ -20,6 +20,7 @@ Produced by the luxembourg PS-tech team.
 ## Functionalities:
 
 * __Star project on odoo SH__
+* __Enable (or not) debug mode by default on Odoo websites__
 
 ### To do
 

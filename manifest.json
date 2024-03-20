@@ -6,6 +6,10 @@
   "host_permissions": ["https://*/*"],
   "content_scripts": [
     {
+      "matches": ["https://*/*"],
+      "js": ["scripts/globalWebsites.js"]
+    },
+    {
       "matches": ["https://*.odoo.sh/project*"],
       "js": ["scripts/shFavorites.js"],
       "css": ["assets/styles.css"]
@@ -13,12 +17,16 @@
   ],
   "web_accessible_resources": [
     {
+      "matches": ["https://*/*"],
+      "resources": ["scripts/odooWebsites.js"]
+    },
+    {
       "resources": [
         "assets/star.png"
       ],
       "matches": ["https://www.odoo.sh/*"]
     }
-    ],
+  ],
   "icons":{
     "16": "assets/icon.png",
     "48" : "assets/icon.png",
