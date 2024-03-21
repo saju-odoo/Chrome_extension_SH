@@ -3,10 +3,10 @@
   "version": "0.1.2",
   "description": "Modify SH",
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["https://*/*"],
+  "host_permissions": ["*://*/*"],
   "content_scripts": [
     {
-      "matches": ["https://*/*"],
+      "matches": ["*://*/*"],
       "js": ["scripts/globalWebsites.js"]
     },
     {
@@ -17,7 +17,7 @@
   ],
   "web_accessible_resources": [
     {
-      "matches": ["https://*/*"],
+      "matches": ["*://*/*"],
       "resources": ["scripts/odooWebsites.js"]
     },
     {
