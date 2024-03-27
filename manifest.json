@@ -3,22 +3,30 @@
   "version": "0.1.2",
   "description": "Modify SH",
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["https://www.odoo.sh/*"],
+  "host_permissions": ["*://*/*"],
   "content_scripts": [
     {
-      "matches": ["https://*.odoo.sh/project/*"],
-      "js": ["contentScript.js"],
+      "matches": ["*://*/*"],
+      "js": ["scripts/globalWebsites.js"]
+    },
+    {
+      "matches": ["https://*.odoo.sh/project*"],
+      "js": ["scripts/shFavorites.js"],
       "css": ["assets/styles.css"]
     }
   ],
   "web_accessible_resources": [
+    {
+      "matches": ["*://*/*"],
+      "resources": ["scripts/odooWebsites.js"]
+    },
     {
       "resources": [
         "assets/star.png"
       ],
       "matches": ["https://www.odoo.sh/*"]
     }
-    ],
+  ],
   "icons":{
     "16": "assets/icon.png",
     "48" : "assets/icon.png",
