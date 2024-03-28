@@ -44,19 +44,11 @@ const sortProjects = (a, b) => {
 
 const toggleStar = (stars, projectName) => {
     const isStarred = stars[0].classList.contains(STARRED_CLASS);
-    if (isStarred) {
-        stars.forEach((star) => {
-            star.classList.remove(STARRED_CLASS);
-            star.classList.add(NON_STARRED_CLASS);
-        });
-        return removeFavorite(projectName);
-    } else {
-        stars.forEach((star) => {
-            star.classList.remove(NON_STARRED_CLASS);
-            star.classList.add(STARRED_CLASS);
-        });
-        return addFavorite(projectName);
-    }
+    stars.forEach(star => {
+        star.classList.toggle(STARRED_CLASS);
+        star.classList.toggle(NON_STARRED_CLASS);
+    });
+    return isStarred ? removeFavorite(projectName) : addFavorite(projectName);
 };
 
 const addFavorite = async (projectName) => {

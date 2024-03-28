@@ -23,12 +23,6 @@ const getFavoritesProjects = async () => {
 document.addEventListener("DOMContentLoaded", async function() {
     const favorites = await getFavoritesProjects();
     const settings = await getSettings();
-    // // Comments are tests for people who do not have access to odoo sh
-    // const favorites = [
-    //     'Odoo-electricity-app',
-    //     'Electricity_cons_Bitcoin',
-    //     'Portfolio_Optimization',
-    // ];
     const projectsContainer = document.getElementById("projects");
     for (const favorite of favorites) {
         const a = document.createElement("a");
